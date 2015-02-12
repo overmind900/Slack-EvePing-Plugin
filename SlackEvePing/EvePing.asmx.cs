@@ -31,7 +31,7 @@ namespace SlackEvePing {
 #if DEBUG
 			Console.WriteLine(string.Format("token={0}, team_id={1}, channel_id={2}, channel_name={3}, user_id={4}, user_name={5}, command={6}, text={7}", token, team_id, channel_id, channel_name, user_id, user_name, command, text)); 
 #endif
-			return "200";
+			return "Success: Your user id is " + user_id;
 		}
 
 		[WebMethod]
