@@ -64,9 +64,6 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="UserMapping.sql" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="App.config" />
     <EntityDeploy Include="DBEFModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
