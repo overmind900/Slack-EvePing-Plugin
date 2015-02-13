@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.Services;
 using System.Diagnostics;
 
-namespace SlackEvePing {
+namespace SlackEvePingWebservice {
 	/// <summary>
 	/// Summary description for EvePing
 	/// </summary>
