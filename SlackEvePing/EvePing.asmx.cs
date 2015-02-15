@@ -75,14 +75,14 @@ namespace SlackEvePingWebservice {
 		/// <param name="ping_vCode">optional EvePingAPI vCode</param>
 		/// <returns></returns>
 		[WebMethod]
-		public string UpdateUserInfo(string slack_UserID, string ping_KeyID, string ping_vCode, KeyType keytype) {
+		public string UpdateUserInfo(string slack_UserID, string ping_KeyID, string ping_vCode, string keytype) {
 			if(string.IsNullOrWhiteSpace(slack_UserID)) return "Please provide Slack ID";
 			string returnMessage = string.Empty;
 			try {
-				
+				KeyType KeyTypeEnum = !string.IsNullOrWhiteSpace(keytype) ? (KeyType)Enum.Parse(typeof(KeyType), keytype, true) : KeyType.Corporation;
 				if( !string.IsNullOrWhiteSpace(ping_KeyID) && !string.IsNullOrWhiteSpace(ping_vCode) ) {
 					// add new user or update existing user
-					if( DataLayer.AddUpdate(slack_UserID, ping_KeyID, ping_vCode, keytype) ) {
+					if( DataLayer.AddUpdate(slack_UserID, ping_KeyID, ping_vCode, KeyTypeEnum) ) {
 						returnMessage = "201: Success - User " + slack_UserID + " Added";
 					} else {
 						// will likely throw exception before getting here but just in case
@@ -102,8 +102,12 @@ namespace SlackEvePingWebservice {
 				returnMessage = "400: Bad Request - " + ae.Message;
 			} catch( Exception ex ) {
 				// unknown server error
-				DataLayer.Log(ex.ToString());
+#if DEBUG
+				returnMessage = "500: Server Error - " + ex.ToString();
+#elif !DUBUG
 				returnMessage = "500: Server Error - Contact Admin. Error Logged at" + DateTime.UtcNow.ToString();
+				DataLayer.Log(ex.ToString());
+#endif
 			}
 			return returnMessage;
 		}
