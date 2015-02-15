@@ -4,10 +4,27 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="SlackEvePingModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+    <Schema Namespace="SlackEvePingModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
         <EntityContainer Name="SlackEvePingModelStoreContainer">
+          <EntitySet Name="Log" EntityType="SlackEvePingModel.Store.Log" store:Type="Tables" store:Schema="dbo" store:Name="Log">
+            <DefiningQuery>SELECT 
+      [Log].[DateTime] AS [DateTime], 
+      [Log].[Message] AS [Message]
+      FROM [dbo].[Log] AS [Log]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="UserMapping" EntityType="SlackEvePingModel.Store.UserMapping" store:Type="Tables" Schema="dbo" />
         </EntityContainer>
+        <!--Errors Found During Generation:
+      warning 6002: The table/view 'SlackEvePing.dbo.Log' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.
+      -->
+        <EntityType Name="Log">
+          <Key>
+            <PropertyRef Name="DateTime" />
+            <PropertyRef Name="Message" />
+          </Key>
+          <Property Name="DateTime" Type="datetime2" Nullable="false" />
+          <Property Name="Message" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
         <EntityType Name="UserMapping">
           <Key>
             <PropertyRef Name="UserID" />
@@ -17,13 +34,13 @@
           <Property Name="vCode" Type="nvarchar" MaxLength="1000" />
           <Property Name="LastPing" Type="datetime2" />
         </EntityType>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="SlackEvePingModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
         <EntityContainer Name="SlackEvePingEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="UserMappings" EntityType="SlackEvePingModel.UserMapping" />
+          <EntitySet Name="Logs" EntityType="SlackEvePingModel.Log" />
         </EntityContainer>
         <EntityType Name="UserMapping">
           <Key>
@@ -33,6 +50,14 @@
           <Property Name="KeyID" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
           <Property Name="vCode" Type="String" MaxLength="1000" Unicode="true" FixedLength="false" />
           <Property Name="LastPing" Type="DateTime" />
+        </EntityType>
+        <EntityType Name="Log">
+          <Key>
+            <PropertyRef Name="DateTime" />
+            <PropertyRef Name="Message" />
+          </Key>
+          <Property Type="DateTime" Name="DateTime" Nullable="false" />
+          <Property Type="String" Name="Message" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -47,6 +72,14 @@
                 <ScalarProperty Name="KeyID" ColumnName="KeyID" />
                 <ScalarProperty Name="vCode" ColumnName="vCode" />
                 <ScalarProperty Name="LastPing" ColumnName="LastPing" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Logs">
+            <EntityTypeMapping TypeName="SlackEvePingModel.Log">
+              <MappingFragment StoreEntitySet="Log">
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="DateTime" ColumnName="DateTime" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -72,6 +105,7 @@
     <Diagrams>
       <Diagram Name="DBEFModel">
         <EntityTypeShape EntityType="SlackEvePingModel.UserMapping" Width="1.5" PointX="0.75" PointY="0.75" Height="1.787985026041667" IsExpanded="true" />
+        <EntityTypeShape EntityType="SlackEvePingModel.Log" Width="1.5" PointX="3.375" PointY="0.75" Height="1.4033821614583335" />
       </Diagram>
     </Diagrams>
   </Designer>

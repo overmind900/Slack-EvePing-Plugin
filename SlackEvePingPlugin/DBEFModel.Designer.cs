@@ -80,6 +80,22 @@ namespace SlackEvePingPlugin
             }
         }
         private ObjectSet<UserMapping> _UserMappings;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        public ObjectSet<Log> Logs
+        {
+            get
+            {
+                if ((_Logs == null))
+                {
+                    _Logs = base.CreateObjectSet<Log>("Logs");
+                }
+                return _Logs;
+            }
+        }
+        private ObjectSet<Log> _Logs;
 
         #endregion
 
@@ -92,6 +108,14 @@ namespace SlackEvePingPlugin
         {
             base.AddObject("UserMappings", userMapping);
         }
+    
+        /// <summary>
+        /// Deprecated Method for adding a new object to the Logs EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddToLogs(Log log)
+        {
+            base.AddObject("Logs", log);
+        }
 
         #endregion
 
@@ -100,6 +124,92 @@ namespace SlackEvePingPlugin
     #endregion
 
     #region Entities
+    
+    /// <summary>
+    /// No Metadata Documentation available.
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="SlackEvePingModel", Name="Log")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class Log : EntityObject
+    {
+        #region Factory Method
+    
+        /// <summary>
+        /// Create a new Log object.
+        /// </summary>
+        /// <param name="dateTime">Initial value of the DateTime property.</param>
+        /// <param name="message">Initial value of the Message property.</param>
+        public static Log CreateLog(global::System.DateTime dateTime, global::System.String message)
+        {
+            Log log = new Log();
+            log.DateTime = dateTime;
+            log.Message = message;
+            return log;
+        }
+
+        #endregion
+
+        #region Primitive Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.DateTime DateTime
+        {
+            get
+            {
+                return _DateTime;
+            }
+            set
+            {
+                if (_DateTime != value)
+                {
+                    OnDateTimeChanging(value);
+                    ReportPropertyChanging("DateTime");
+                    _DateTime = StructuralObject.SetValidValue(value);
+                    ReportPropertyChanged("DateTime");
+                    OnDateTimeChanged();
+                }
+            }
+        }
+        private global::System.DateTime _DateTime;
+        partial void OnDateTimeChanging(global::System.DateTime value);
+        partial void OnDateTimeChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String Message
+        {
+            get
+            {
+                return _Message;
+            }
+            set
+            {
+                if (_Message != value)
+                {
+                    OnMessageChanging(value);
+                    ReportPropertyChanging("Message");
+                    _Message = StructuralObject.SetValidValue(value, false);
+                    ReportPropertyChanged("Message");
+                    OnMessageChanged();
+                }
+            }
+        }
+        private global::System.String _Message;
+        partial void OnMessageChanging(global::System.String value);
+        partial void OnMessageChanged();
+
+        #endregion
+
+    
+    }
     
     /// <summary>
     /// No Metadata Documentation available.

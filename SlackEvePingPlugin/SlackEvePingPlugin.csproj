@@ -58,18 +58,20 @@
     </Compile>
     <Compile Include="EvePing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UserMappingSQL.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <EntityDeploy Include="DBEFModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>DBEFModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
+    <None Include="App.Config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CreateTables.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -4,40 +4,100 @@ using System.Linq;
 using System.Web;
 using System.Web.Services;
 using System.Diagnostics;
+using SlackEvePingPlugin;
 
 namespace SlackEvePingWebservice {
 	/// <summary>
 	/// Summary description for EvePing
 	/// </summary>
-	[WebService(Namespace = "http://tempuri.org/")]
+	[WebService(Namespace = "http://y790.somee.com")]
 	[WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
 	[System.ComponentModel.ToolboxItem(false)]
 	// To allow this Web Service to be called from script, using ASP.NET AJAX, uncomment the following line. 
 	// [System.Web.Script.Services.ScriptService]
 	public class EvePing : System.Web.Services.WebService {
 
-		/*
-		token={0}
-		team_id={1}
-		channel_id={2}
-		channel_name={3}
-		user_id={4}
-		user_name={5}
-		command={6}
-		text={7}
-		 */
+		/// <summary>
+		/// Send a eve Ping
+		/// </summary>
+		/// <param name="token">Not required/ignored</param>
+		/// <param name="team_id">Not required/ignored</param>
+		/// <param name="channel_id">Not required/ignored</param>
+		/// <param name="channel_name">Not required/ignored</param>
+		/// <param name="user_id">slack user ID</param>
+		/// <param name="user_name">Not required/ignored</param>
+		/// <param name="command">Not required/ignored</param>
+		/// <param name="text">Ping to send</param>
+		/// <returns></returns>
 		[WebMethod]
-		public string SlackTest(string token, string team_id, string channel_id, string channel_name, string user_id, string user_name, string command, string text) {
-#if DEBUG
-			Console.WriteLine(string.Format("token={0}, team_id={1}, channel_id={2}, channel_name={3}, user_id={4}, user_name={5}, command={6}, text={7}", token, team_id, channel_id, channel_name, user_id, user_name, command, text)); 
-#endif
-			return "Success: Your user id is " + user_id;
+		public string SendPing(string token, string team_id, string channel_id, string channel_name, string user_id, string user_name, string command, string text) {
+			string returnMessage= string.Empty;
+			if( !string.IsNullOrWhiteSpace(text) ) { //no text no ping
+				try {
+					// Find the user who send the ping
+					string vCode, keyID = null;
+					if( DataLayer.Find(user_id, out keyID, out vCode) ) { 
+						//send ping
+						returnMessage = "200: Success - message sent";
+					} else {
+						//User not found
+						returnMessage = "404: Not Found - Your user id was not found, your slack user id is " + user_id + " Register at http://y790.somee.com";
+					}
+				} catch( ArgumentException ae ) {
+					// bad parameters
+					returnMessage = "400: Bad Request - " + ae.Message;
+				} catch( Exception ex ) {
+					// unknown server error
+					returnMessage = "500: Server Error - Contact Admin. Error Logged at" + DateTime.UtcNow.ToString();
+					DataLayer.Log(ex.ToString());
+				}
+			} else {
+				returnMessage = "400: Bad Request - no message to send";
+			}
+			return returnMessage;
 		}
 
+		/// <summary>
+		/// User Management if KeyID or vCode is omitted user will be removed
+		/// </summary>
+		/// <param name="slack_UserID">slack user ID</param>
+		/// <param name="ping_KeyID">optional EvePingAPI KeyID</param>
+		/// <param name="ping_vCode">optional EvePingAPI vCode</param>
+		/// <returns></returns>
 		[WebMethod]
-		public string Hello(string name) {
-			return "Hello " + name;
+		public string UpdateUserInfo(string slack_UserID, string ping_KeyID, string ping_vCode) {
+			if(string.IsNullOrWhiteSpace(slack_UserID)) return "Please provide Slack ID";
+			string returnMessage = string.Empty;
+			try {
+				
+				if( !string.IsNullOrWhiteSpace(ping_KeyID) && !string.IsNullOrWhiteSpace(ping_vCode) ) {
+					// add new user or update existing user
+					if( DataLayer.AddUpdate(slack_UserID, ping_KeyID, ping_vCode ) ) {
+						returnMessage = "201: Success - User " + slack_UserID + " Added";
+					} else {
+						// will likely throw exception before getting here but just in case
+						returnMessage = "User " + slack_UserID + " failed to add";
+						DataLayer.Log(string.Format("Failed to update the database no error thrown: slack_UserID: {0}, ping_KeyID: {1}, ping_vCode{2}", slack_UserID, ping_KeyID, ping_vCode));
+					}
+				} else {
+					//didn't provide KeyID and vCode, delete user.
+					if( DataLayer.Remove(slack_UserID) ) {
+						returnMessage = "200: Success - User " + slack_UserID + " removed";
+					} else {
+						returnMessage = "404: Not Found - User " + slack_UserID + " not found";
+					}
+				}
+			} catch( ArgumentException ae) {
+				// bad parameters
+				returnMessage = "400: Bad Request - " + ae.Message;
+			} catch( Exception ex ) {
+				// unknown server error
+				DataLayer.Log(ex.ToString());
+				returnMessage = "500: Server Error - Contact Admin. Error Logged at" + DateTime.UtcNow.ToString();
+			}
+			return returnMessage;
 		}
+
 
 
 	}

@@ -19,7 +19,6 @@ using System.Runtime.InteropServices;
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
 [assembly: InternalsVisibleTo("SlackEvePingWebservice")]
-[assembly: InternalsVisibleTo("EvePingPluginTest")]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("26660c92-bb64-48b4-a107-f9fd1a7ca24a")]
