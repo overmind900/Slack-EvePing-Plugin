@@ -83,7 +83,7 @@ namespace SlackEvePingWebservice {
 				if( !string.IsNullOrWhiteSpace(ping_KeyID) && !string.IsNullOrWhiteSpace(ping_vCode) ) {
 					// add new user or update existing user
 					if( DataLayer.AddUpdate(slack_UserID, ping_KeyID, ping_vCode, KeyTypeEnum) ) {
-						returnMessage = "201: Success - User " + slack_UserID + " Added";
+						returnMessage = "201: Success - User " + slack_UserID + " Added/Updated";
 					} else {
 						// will likely throw exception before getting here but just in case
 						returnMessage = "User " + slack_UserID + " failed to add";
