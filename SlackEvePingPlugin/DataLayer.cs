@@ -9,10 +9,11 @@ using System.Data;
 namespace SlackEvePingPlugin {
 	internal static partial class DataLayer {
 
-		internal static bool Find(string user_id, out string keyID, out string vCode) {
+		internal static bool Find(string user_id, out string keyID, out string vCode, out KeyType keyType) {
 			if( string.IsNullOrWhiteSpace(user_id) ) throw new ArgumentException("user_id cannot be empty");
 			keyID = null;
 			vCode = null;
+			keyType = KeyType.Corporation;
 			SlackEvePingEntities ef = new SlackEvePingEntities();
 			UserMapping user = ef.UserMappings.FirstOrDefault(x => x.UserID == user_id.Trim());
 			if( user != null ) {
@@ -22,7 +23,7 @@ namespace SlackEvePingPlugin {
 			return user != null;
 		}
 
-		internal static bool AddUpdate(string user_id, string keyID, string vCode) {
+		internal static bool AddUpdate(string user_id, string keyID, string vCode, KeyType KeyType) {
 			if(string.IsNullOrWhiteSpace(user_id)) throw new ArgumentException("user_id cannot be empty");
 			if( string.IsNullOrWhiteSpace(keyID) ) throw new ArgumentException("KeyID cannot be empty");
 			if( string.IsNullOrWhiteSpace(vCode) ) throw new ArgumentException("vCode cannot be empty");
@@ -35,7 +36,7 @@ namespace SlackEvePingPlugin {
 			}
 			user.KeyID = keyID.Trim();
 			user.vCode = vCode.Trim();
-			user.LastPing = DateTime.UtcNow;
+			user.KeyType = KeyType.ToString();
 			ef.SaveChanges();
 			return true;
 		}

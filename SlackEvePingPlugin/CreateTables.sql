@@ -4,12 +4,15 @@ BEGIN
 		[UserID] [nvarchar](100) NOT NULL,
 		[KeyID] [nvarchar](100) NULL,
 		[vCode] [nvarchar](1000) NULL,
-		[LastPing] [datetime2] NULL
+		[KeyType] [nvarchar](50) NULL
 	 CONSTRAINT [PK_UserMapping_UserID] PRIMARY KEY CLUSTERED ([UserID] ASC)
 	)
-
-	CREATE INDEX IDX_UserMapping_LastPing ON [dbo].[UserMapping](LastPing)
 END
 
-
-
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE [object_id] = OBJECT_ID('[dbo].[Log]'))
+BEGIN
+	CREATE TABLE [dbo].[Log](
+		[DateTime] [datetime2](7) NOT NULL,
+		[Message] [nvarchar](max) NOT NULL
+	)
+END

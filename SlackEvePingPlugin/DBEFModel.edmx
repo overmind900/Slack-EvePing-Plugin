@@ -32,25 +32,16 @@
           <Property Name="UserID" Type="nvarchar" Nullable="false" MaxLength="100" />
           <Property Name="KeyID" Type="nvarchar" MaxLength="100" />
           <Property Name="vCode" Type="nvarchar" MaxLength="1000" />
-          <Property Name="LastPing" Type="datetime2" />
+          <Property Name="KeyType" Type="nvarchar" MaxLength="50" />
         </EntityType>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="SlackEvePingModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
         <EntityContainer Name="SlackEvePingEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="UserMappings" EntityType="SlackEvePingModel.UserMapping" />
           <EntitySet Name="Logs" EntityType="SlackEvePingModel.Log" />
+          <EntitySet Name="UserMappings" EntityType="SlackEvePingModel.UserMapping" />
         </EntityContainer>
-        <EntityType Name="UserMapping">
-          <Key>
-            <PropertyRef Name="UserID" />
-          </Key>
-          <Property Name="UserID" Type="String" Nullable="false" MaxLength="100" Unicode="true" FixedLength="false" />
-          <Property Name="KeyID" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
-          <Property Name="vCode" Type="String" MaxLength="1000" Unicode="true" FixedLength="false" />
-          <Property Name="LastPing" Type="DateTime" />
-        </EntityType>
         <EntityType Name="Log">
           <Key>
             <PropertyRef Name="DateTime" />
@@ -59,27 +50,36 @@
           <Property Type="DateTime" Name="DateTime" Nullable="false" />
           <Property Type="String" Name="Message" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="UserMapping">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Type="String" Name="UserID" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="KeyID" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="vCode" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="KeyType" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="SlackEvePingModelStoreContainer" CdmEntityContainer="SlackEvePingEntities">
-          <EntitySetMapping Name="UserMappings">
-            <EntityTypeMapping TypeName="SlackEvePingModel.UserMapping">
-              <MappingFragment StoreEntitySet="UserMapping">
-                <ScalarProperty Name="UserID" ColumnName="UserID" />
-                <ScalarProperty Name="KeyID" ColumnName="KeyID" />
-                <ScalarProperty Name="vCode" ColumnName="vCode" />
-                <ScalarProperty Name="LastPing" ColumnName="LastPing" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Logs">
             <EntityTypeMapping TypeName="SlackEvePingModel.Log">
               <MappingFragment StoreEntitySet="Log">
                 <ScalarProperty Name="Message" ColumnName="Message" />
                 <ScalarProperty Name="DateTime" ColumnName="DateTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserMappings">
+            <EntityTypeMapping TypeName="SlackEvePingModel.UserMapping">
+              <MappingFragment StoreEntitySet="UserMapping">
+                <ScalarProperty Name="KeyType" ColumnName="KeyType" />
+                <ScalarProperty Name="vCode" ColumnName="vCode" />
+                <ScalarProperty Name="KeyID" ColumnName="KeyID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -104,8 +104,8 @@
     <!-- Diagram content (shape and connector positions) -->
     <Diagrams>
       <Diagram Name="DBEFModel">
-        <EntityTypeShape EntityType="SlackEvePingModel.UserMapping" Width="1.5" PointX="0.75" PointY="0.75" Height="1.787985026041667" IsExpanded="true" />
         <EntityTypeShape EntityType="SlackEvePingModel.Log" Width="1.5" PointX="3.375" PointY="0.75" Height="1.4033821614583335" />
+        <EntityTypeShape EntityType="SlackEvePingModel.UserMapping" Width="1.5" PointX="0.75" PointY="0.75" Height="1.7879850260416665" />
       </Diagram>
     </Diagrams>
   </Designer>

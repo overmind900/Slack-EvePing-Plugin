@@ -68,22 +68,6 @@ namespace SlackEvePingPlugin
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        public ObjectSet<UserMapping> UserMappings
-        {
-            get
-            {
-                if ((_UserMappings == null))
-                {
-                    _UserMappings = base.CreateObjectSet<UserMapping>("UserMappings");
-                }
-                return _UserMappings;
-            }
-        }
-        private ObjectSet<UserMapping> _UserMappings;
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
         public ObjectSet<Log> Logs
         {
             get
@@ -96,18 +80,26 @@ namespace SlackEvePingPlugin
             }
         }
         private ObjectSet<Log> _Logs;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        public ObjectSet<UserMapping> UserMappings
+        {
+            get
+            {
+                if ((_UserMappings == null))
+                {
+                    _UserMappings = base.CreateObjectSet<UserMapping>("UserMappings");
+                }
+                return _UserMappings;
+            }
+        }
+        private ObjectSet<UserMapping> _UserMappings;
 
         #endregion
 
         #region AddTo Methods
-    
-        /// <summary>
-        /// Deprecated Method for adding a new object to the UserMappings EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
-        /// </summary>
-        public void AddToUserMappings(UserMapping userMapping)
-        {
-            base.AddObject("UserMappings", userMapping);
-        }
     
         /// <summary>
         /// Deprecated Method for adding a new object to the Logs EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
@@ -115,6 +107,14 @@ namespace SlackEvePingPlugin
         public void AddToLogs(Log log)
         {
             base.AddObject("Logs", log);
+        }
+    
+        /// <summary>
+        /// Deprecated Method for adding a new object to the UserMappings EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddToUserMappings(UserMapping userMapping)
+        {
+            base.AddObject("UserMappings", userMapping);
         }
 
         #endregion
@@ -316,24 +316,24 @@ namespace SlackEvePingPlugin
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
-        public Nullable<global::System.DateTime> LastPing
+        public global::System.String KeyType
         {
             get
             {
-                return _LastPing;
+                return _KeyType;
             }
             set
             {
-                OnLastPingChanging(value);
-                ReportPropertyChanging("LastPing");
-                _LastPing = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("LastPing");
-                OnLastPingChanged();
+                OnKeyTypeChanging(value);
+                ReportPropertyChanging("KeyType");
+                _KeyType = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("KeyType");
+                OnKeyTypeChanged();
             }
         }
-        private Nullable<global::System.DateTime> _LastPing;
-        partial void OnLastPingChanging(Nullable<global::System.DateTime> value);
-        partial void OnLastPingChanged();
+        private global::System.String _KeyType;
+        partial void OnKeyTypeChanging(global::System.String value);
+        partial void OnKeyTypeChanged();
 
         #endregion
 
