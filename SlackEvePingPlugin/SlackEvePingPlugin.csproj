@@ -67,7 +67,9 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>DBEFModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <None Include="App.Config" />
+    <None Include="App.Config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

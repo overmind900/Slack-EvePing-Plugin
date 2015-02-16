@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using SlackEvePingPlugin;
+using System.Configuration;
 
 namespace SlackEvePingWebservice {
 	internal static class SlackEvePing {
@@ -24,7 +25,7 @@ namespace SlackEvePingWebservice {
 #endif
 					} else {
 						//User not found
-						returnMessage = "404: Not Found - Your user id was not found, your slack user id is " + user_id + " Register at http://y790.somee.com";
+						returnMessage = "404: Not Found - Your user id was not found, your slack user id is " + user_id + " Register at " + ConfigurationManager.AppSettings["Site"] ?? "";
 					}
 				} catch( ArgumentException ae ) {
 					// bad parameters
@@ -39,7 +40,7 @@ namespace SlackEvePingWebservice {
 #endif
 				}
 			} else {
-				returnMessage = "400: Bad Request - no message to send";
+				returnMessage = "400: Bad Request - no message to send, your slack user id is " + user_id;
 			}
 			return returnMessage;
 		}
