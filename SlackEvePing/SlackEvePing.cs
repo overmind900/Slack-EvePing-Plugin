@@ -8,7 +8,7 @@ namespace SlackEvePingWebservice {
 	internal static class SlackEvePing {
 
 		internal static string SendPing(string user_id, string text) {
-			string returnMessage = string.Empty;
+			string returnMessage = "Failed - message not sent";
 			if( !string.IsNullOrWhiteSpace(text) ) { //no text no ping
 				try {
 					// Find the user who send the ping
@@ -20,7 +20,7 @@ namespace SlackEvePingWebservice {
 						return string.Format("200: Success(DEBUG) - slack_id: {0}, ping_keyID: {1}, ping_vCode: {2}, ping_type: {3}, message: {4}", user_id, keyID, vCode, keyType.ToString(), text);
 #elif !DEBUG
 						SlackEvePingPlugin.EvePing.SendPing(keyType, keyID, vCode, text); 
-						returnMessage = "200: Success - message sent";
+						returnMessage = "Success - message sent";
 #endif
 					} else {
 						//User not found
