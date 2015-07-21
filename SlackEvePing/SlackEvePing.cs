@@ -1,77 +1,77 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using SlackEvePingPlugin;
 using System.Configuration;
+using SlackEvePingPlugin;
 
 namespace SlackEvePingWebservice {
 	internal static class SlackEvePing {
-
-		internal static string SendPing(string user_id, string text) {
-			string returnMessage = "Failed - message not sent";
-			if( !string.IsNullOrWhiteSpace(text) ) { //no text no ping
+		internal static string SendPing( string userId, string text ) {
+			string returnMessage;
+			if( !string.IsNullOrWhiteSpace( text ) ) { //no text no ping
 				try {
 					// Find the user who send the ping
-					string vCode, keyID = null;
-					KeyType keyType = KeyType.Corporation;
-					if( DataLayer.Find(user_id, out keyID, out vCode, out keyType) ) {
+					string vCode, keyId;
+					KeyType keyType;
+					if( DataLayer.Find( userId, out keyId, out vCode, out keyType ) ) {
 						//send ping
 #if DEBUG
-						return string.Format("200: Success(DEBUG) - slack_id: {0}, ping_keyID: {1}, ping_vCode: {2}, ping_type: {3}, message: {4}", user_id, keyID, vCode, keyType.ToString(), text);
+						returnMessage = string.Format(
+										 "200: Success(DEBUG) - slack_id: {0}, ping_keyID: {1}, ping_vCode: {2}, ping_type: {3}, message: {4}",
+										userId, keyId, vCode, keyType, text );
 #elif !DEBUG
-						SlackEvePingPlugin.EvePing.SendPing(keyType, keyID, vCode, text); 
+						SlackEvePingPlugin.EvePing.SendPing(keyType, keyId, vCode, text); 
 						returnMessage = "Success - message sent";
 #endif
+						DataLayer.Log( string.Format( "{0} send ping \"{1}\"", userId, text ) );
 					} else {
 						//User not found
-						returnMessage = "404: Not Found - Your user id was not found, your slack user id is " + user_id + " Register at " + ConfigurationManager.AppSettings["Site"] ?? "";
+						returnMessage = "404: Not Found - Your user id was not found, your slack user id is " + userId + " Register at " +
+										ConfigurationManager.AppSettings["Site"];
+						DataLayer.Log( returnMessage );
 					}
 				} catch( ArgumentException ae ) {
 					// bad parameters
 					returnMessage = "400: Bad Request - " + ae.Message;
+					DataLayer.Log( ae.ToString() );
 				} catch( Exception ex ) {
 					// unknown server error
 #if DEBUG
-					returnMessage = "500: Server Error - " + ex.ToString();
+					returnMessage = "500: Server Error - " + ex;
 #elif !DUBUG
-					returnMessage = "500: Server Error - Contact Admin. Error Logged at" + DateTime.UtcNow.ToString();
-					DataLayer.Log(ex.ToString());
+					returnMessage = "500: Server Error - Contact Admin. Error Logged at" + DateTime.UtcNow;
 #endif
+					DataLayer.Log( ex.ToString() );
 				}
 			} else {
-				returnMessage = "400: Bad Request - no message to send, your slack user id is " + user_id;
+				returnMessage = "400: Bad Request - no message to send, your slack user id is " + userId;
 			}
 			return returnMessage;
 		}
 
-		/// <summary>
-		/// User Management if KeyID or vCode is omitted user will be removed
-		/// </summary>
-		/// <param name="slack_UserID">slack user ID</param>
-		/// <param name="ping_KeyID">optional EvePingAPI KeyID</param>
-		/// <param name="ping_vCode">optional EvePingAPI vCode</param>
-		/// <returns></returns>
-		internal static string UpdateUserInfo(string slack_UserID, string ping_KeyID, string ping_vCode, string keytype) {
-			if( string.IsNullOrWhiteSpace(slack_UserID) ) return "Please provide Slack ID";
-			string returnMessage = string.Empty;
+		internal static string UpdateUserInfo( string slackUserId, string pingKeyId, string pingVCode, string keytype ) {
+			if( string.IsNullOrWhiteSpace( slackUserId ) ) return "Please provide Slack ID";
+			string returnMessage;
 			try {
-				KeyType KeyTypeEnum = !string.IsNullOrWhiteSpace(keytype) ? (KeyType)Enum.Parse(typeof(KeyType), keytype, true) : KeyType.Corporation;
-				if( !string.IsNullOrWhiteSpace(ping_KeyID) && !string.IsNullOrWhiteSpace(ping_vCode) ) {
+				KeyType keyTypeEnum = !string.IsNullOrWhiteSpace( keytype )
+					? (KeyType) Enum.Parse( typeof( KeyType ), keytype, true ) : KeyType.Corporation;
+				if( !string.IsNullOrWhiteSpace( pingKeyId ) &&
+					!string.IsNullOrWhiteSpace( pingVCode ) ) {
 					// add new user or update existing user
-					if( DataLayer.AddUpdate(slack_UserID, ping_KeyID, ping_vCode, KeyTypeEnum) ) {
-						returnMessage = "201: Success - User " + slack_UserID + " Added/Updated";
+					if( DataLayer.AddUpdate( slackUserId, pingKeyId, pingVCode, keyTypeEnum ) ) {
+						returnMessage = "201: Success - User " + slackUserId + " Added/Updated";
 					} else {
 						// will likely throw exception before getting here but just in case
-						returnMessage = "User " + slack_UserID + " failed to add";
-						DataLayer.Log(string.Format("Failed to update the database no error thrown: slack_UserID: {0}, ping_KeyID: {1}, ping_vCode{2}", slack_UserID, ping_KeyID, ping_vCode));
+						returnMessage = "User " + slackUserId + " failed to add";
+						DataLayer.Log(
+									 string.Format(
+												 "Failed to update the database no error thrown: slack_UserID: {0}, ping_KeyID: {1}, ping_vCode{2}",
+												slackUserId, pingKeyId, pingVCode ) );
 					}
 				} else {
 					//didn't provide KeyID and vCode, delete user.
-					if( DataLayer.Remove(slack_UserID) ) {
-						returnMessage = "200: Success - User " + slack_UserID + " removed";
+					if( DataLayer.Remove( slackUserId ) ) {
+						returnMessage = "200: Success - User " + slackUserId + " removed";
 					} else {
-						returnMessage = "404: Not Found - User " + slack_UserID + " not found";
+						returnMessage = "404: Not Found - User " + slackUserId + " not found";
 					}
 				}
 			} catch( ArgumentException ae ) {
@@ -80,11 +80,11 @@ namespace SlackEvePingWebservice {
 			} catch( Exception ex ) {
 				// unknown server error
 #if DEBUG
-				returnMessage = "500: Server Error - " + ex.ToString();
+				returnMessage = "500: Server Error - " + ex;
 #elif !DUBUG
 				returnMessage = "500: Server Error - Contact Admin. Error Logged at" + DateTime.UtcNow.ToString();
-				DataLayer.Log(ex.ToString());
 #endif
+				DataLayer.Log( ex.ToString() );
 			}
 			return returnMessage;
 		}

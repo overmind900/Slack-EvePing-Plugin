@@ -12,13 +12,13 @@ namespace SlackEvePingPlugin {
 
 		internal const string EvePingUrlFormat = @"https://www.eveping.com/api/sendmessage?keyid={0}&vcode={1}&type={2}&message={3}";
 	
-		internal static string SendPing(KeyType keyType,string keyID, string vCode, string message) {
-			if( string.IsNullOrWhiteSpace(keyID) ) throw new ArgumentException("keyID Cannot be Null, Empty, or White Space");
+		internal static string SendPing(KeyType keyType,string keyId, string vCode, string message) {
+			if( string.IsNullOrWhiteSpace(keyId) ) throw new ArgumentException("keyID Cannot be Null, Empty, or White Space");
 			if( string.IsNullOrWhiteSpace(vCode) ) throw new ArgumentException("vCode Cannot be Null, Empty, or White Space");
 			if( string.IsNullOrWhiteSpace(message) ) throw new ArgumentException("message Cannot be Null, Empty, or White Space");
 
 			// Set up the ping
-			WebRequest ping = WebRequest.Create(string.Format(EvePingUrlFormat, keyID, vCode,keyType.ToString(),message));
+			WebRequest ping = WebRequest.Create( string.Format( EvePingUrlFormat, keyId, vCode, keyType, message ) );
 			ping.Method = "GET";
 
 			// Get the original response.

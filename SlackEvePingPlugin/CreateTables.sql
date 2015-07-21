@@ -13,6 +13,7 @@ IF NOT EXISTS (SELECT * FROM sys.tables WHERE [object_id] = OBJECT_ID('[dbo].[Lo
 BEGIN
 	CREATE TABLE [dbo].[Log](
 		[DateTime] [datetime2](7) NOT NULL,
-		[Message] [nvarchar](max) NOT NULL
+		[Message] [nvarchar](max) NOT NULL,
+		CONSTRAINT [PK_Log_DateTime] PRIMARY KEY CLUSTERED ([DateTime] ASC)
 	)
 END

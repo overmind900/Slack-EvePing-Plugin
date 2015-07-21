@@ -68,22 +68,6 @@ namespace SlackEvePingPlugin
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        public ObjectSet<Log> Logs
-        {
-            get
-            {
-                if ((_Logs == null))
-                {
-                    _Logs = base.CreateObjectSet<Log>("Logs");
-                }
-                return _Logs;
-            }
-        }
-        private ObjectSet<Log> _Logs;
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
         public ObjectSet<UserMapping> UserMappings
         {
             get
@@ -96,18 +80,26 @@ namespace SlackEvePingPlugin
             }
         }
         private ObjectSet<UserMapping> _UserMappings;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        public ObjectSet<Log> Logs
+        {
+            get
+            {
+                if ((_Logs == null))
+                {
+                    _Logs = base.CreateObjectSet<Log>("Logs");
+                }
+                return _Logs;
+            }
+        }
+        private ObjectSet<Log> _Logs;
 
         #endregion
 
         #region AddTo Methods
-    
-        /// <summary>
-        /// Deprecated Method for adding a new object to the Logs EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
-        /// </summary>
-        public void AddToLogs(Log log)
-        {
-            base.AddObject("Logs", log);
-        }
     
         /// <summary>
         /// Deprecated Method for adding a new object to the UserMappings EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
@@ -115,6 +107,14 @@ namespace SlackEvePingPlugin
         public void AddToUserMappings(UserMapping userMapping)
         {
             base.AddObject("UserMappings", userMapping);
+        }
+    
+        /// <summary>
+        /// Deprecated Method for adding a new object to the Logs EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddToLogs(Log log)
+        {
+            base.AddObject("Logs", log);
         }
 
         #endregion
@@ -182,7 +182,7 @@ namespace SlackEvePingPlugin
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.String Message
         {
@@ -192,14 +192,11 @@ namespace SlackEvePingPlugin
             }
             set
             {
-                if (_Message != value)
-                {
-                    OnMessageChanging(value);
-                    ReportPropertyChanging("Message");
-                    _Message = StructuralObject.SetValidValue(value, false);
-                    ReportPropertyChanged("Message");
-                    OnMessageChanged();
-                }
+                OnMessageChanging(value);
+                ReportPropertyChanging("Message");
+                _Message = StructuralObject.SetValidValue(value, false);
+                ReportPropertyChanged("Message");
+                OnMessageChanged();
             }
         }
         private global::System.String _Message;
